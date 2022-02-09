@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { CHANGE_TAB } from '../../constants/actionTypes';
 import SimpleMap from './Map/SimpleMap'; 
 import RouteDasBoard from './dasboard/RouteDasboard';
+import RouteInfoInput from './routeinput/RouteInfoInput';
 
 const YourFeedTab = props => {
   if (props.token) {
@@ -67,64 +68,7 @@ const mapDispatchToProps = dispatch => ({
   onTabClick: (tab, pager, payload) => dispatch({ type: CHANGE_TAB, tab, pager, payload })
 });
 
-const RouteInfoInput = props => {
 
-  //this.setState ( { source: '', destination:'', vehicleType:'' });
-  const [source, setSource] = useState(0);
- 
-  const clickHandler = ev => {
-    ev.preventDefault();
-   // this.state = { route: 'y' };
-  }
-  const submitForm = ev => {
-    ev.preventDefault();
-    //this.state = { route: 'y' };
-    window.location.href = '/?source=bangalore&destination=delhi&vehicleType=ICE';
-  };
-  return (
-    <div className='auth-page'>
-      <div className='container page'>
-        <form onSubmit={submitForm}>
-          <fieldset className="form-group">
-            <input
-              className="form-control form-control-lg"
-              type="text"
-              placeholder="Source"
-              
-            />
-          </fieldset>
-
-          <fieldset className="form-group">
-            <input
-              className="form-control form-control-lg"
-              type="Destination"
-              placeholder="Destination"
-              
-            />
-          </fieldset>
-
-          <fieldset className="form-group">
-            <input
-              className="form-control form-control-lg"
-              type="vehicleType"
-              placeholder="VehicleType"
-            />
-          </fieldset>
-          
-          <fieldset className="form-group">
-            <button
-              className="btn btn-lg btn-primary pull-xs-right"
-              type="submit"
-            >
-            submit
-            </button>
-          </fieldset>  
-        </form>
-      </div>
-    </div>
-
-  );
-};
 
 //Display the complete information for the 
 //npm install --save google-maps-react
