@@ -5,6 +5,7 @@ import { CHANGE_TAB } from '../../constants/actionTypes';
 import SimpleMap from './Map/SimpleMap'; 
 import RouteDasBoard from './dasboard/RouteDasboard';
 import RouteInfoInput from './routeinput/RouteInfoInput';
+import ChargingStation from './dasboard/chargingstation/ChargingStation';
 
 const YourFeedTab = props => {
   if (props.token) {
@@ -61,7 +62,8 @@ const mapStateToProps = state => ({
   ...state.articleList,
   tags: state.home.tags,
   token: state.common.token,
-  route: state.route
+  route: state.route,
+  showChargingStationList : state.showChargingStationList
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -101,8 +103,12 @@ const EvMainView = props => {
       <RouteInfoInput tab={props} onTabClick={props.onTabClick} />
     </div >  
     <div className="col-md-9">
-      <RouteDasBoard tab={props}/>
+      <RouteDasBoard tab={props} onTabClick={props.onTabClick}/>
     </div>  
+    <div className="col-md-9">
+      <ChargingStation tab={props} onTabClick={props.onTabClick}/>
+    </div>  
+
     <div className="col-md-9">
       <RouteInfoDetail tab={props} onTabClick={props.onTabClick} />
     </div>

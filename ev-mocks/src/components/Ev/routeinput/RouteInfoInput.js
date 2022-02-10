@@ -47,13 +47,16 @@ const RouteInfoInput = props => {
             </fieldset>
   
             <fieldset className="form-group">
-              <input
+              <select
                 className="form-control form-control-lg"
                 type="vehicleType"
                 placeholder="VehicleType"
                 value={vehicleType}
                 onChange={e => setVehicleType(e.target.value)}
-              />
+              >
+                <option>ICE</option>
+                <option>EV</option>
+                </select>
             </fieldset>
             
             <fieldset className="form-group">
