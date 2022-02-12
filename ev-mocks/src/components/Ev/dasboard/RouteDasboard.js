@@ -5,8 +5,7 @@ import { Button } from 'react-bootstrap';
 
 const RouteDasboard = props => {
     const clickHandler = (ev, f) => {
-        //props.showChargingStationList = f;
-        //console.log(props.showChargingStationList);
+       
         ev.preventDefault();
     }
     return (

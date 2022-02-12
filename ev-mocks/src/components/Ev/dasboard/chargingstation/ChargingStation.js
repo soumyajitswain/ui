@@ -5,8 +5,7 @@ import { Button } from 'react-bootstrap';
 
 const ChargingStation = props => {
     const clickHandler = (ev, f) => {
-        //props.showChargingStationList = f;
-        //console.log(props.showChargingStationList);
+        window.location = '/charging';
         ev.preventDefault();
     }
     return (
