@@ -18,7 +18,7 @@ import {
 } from '../constants/actionTypes';
 
 const defaultState = {
-  appName: 'Go Green',
+  appName: 'EvViron',
   token: null,
   viewChangeCounter: 0
 };
