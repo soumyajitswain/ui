@@ -72,16 +72,12 @@ const LoggedInView = props => {
 class Header extends React.Component {
   render() {
     return (
-      <nav className="navbar navbar-light">
+      <nav className='navbar navbar-right'  style={{'height':'20px', 'weight':'100%'}}>
         <div className="container">
 
           <Link to="/" className="navbar-brand">
             {this.props.appName} 
           </Link>
-
-          <LoggedOutView currentUser={this.props.currentUser} />
-
-          <LoggedInView currentUser={this.props.currentUser} />
         </div>
       </nav>
     );

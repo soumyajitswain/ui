@@ -12,7 +12,7 @@ const RouteDasboard = props => {
 
         <div id="invoice">
 
-            <div className="invoice overflow-auto">
+            <div className="invoice">
                 <div style={{ 'minWidth': '600px' }}>
                     <main>
                         <div className="row contacts">
