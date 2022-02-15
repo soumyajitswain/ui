@@ -7,6 +7,7 @@ import {
   HOME_PAGE_UNLOADED,
   APPLY_TAG_FILTER
 } from '../../../../constants/actionTypes';
+import { Button } from 'react-bootstrap';
 
 const Promise = global.Promise;
 
@@ -48,7 +49,10 @@ class ChargingStationBookingAndInvoiceHome extends React.Component {
 
         <div className="container page">
           <div className="row">
-           
+            <ChargingStationBooking/>
+          </div>
+          <div className="row">
+             <ManageCharging/> 
           </div>
         </div>
 
@@ -60,7 +64,6 @@ class ChargingStationBookingAndInvoiceHome extends React.Component {
 const ChargingStationBooking = props => {
   
   const clickHandler = (ev, f) => {
-    window.location = '/charging';
       ev.preventDefault();
   }
   return (
@@ -80,11 +83,11 @@ const ChargingStationBooking = props => {
                               <tr>
                                   <th>#</th>
                                   <th className="text-left">Name</th>
-                                  <th className="text-right">Address </th>
-                                  <th className="text-right">Distance (Km)</th>
-                                  <th className="text-right">Charging Points</th>
-                                  <th className="text-right">Available</th>
-                                  <th className="text-right">Schedule</th>
+                                  <th className="text-right">Customer Id </th>
+                                  <th className="text-right">Scheduled Time</th>
+                                  <th className="text-right">Connected</th>
+                                  <th className="text-right">Expected Unit</th>
+                                  <th className="text-right">Start/Stop Transaction</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -99,16 +102,58 @@ const ChargingStationBooking = props => {
                                   <td className="total">CHAdeMO (1)</td>
                                   <td className="unit"><Button variant="secondary" onClick={(ev) => clickHandler(ev, 'true')}>Book</Button></td>
                               </tr>
+                          </tbody>
+                      </table>
+                  </main>
+              </div>
+
+          </div>
+      </div>
+
+  );
+};
+
+const ManageCharging = props => {
+  
+  const clickHandler = (ev, f) => {
+      window.location = "/invoice";
+      ev.preventDefault();
+  }
+  return (
+
+      <div id="invoice">
+
+          <div className="invoice">
+              <div style={{ 'minWidth': '100%' }}>
+                  <main>
+                      <div className="row contacts">
+                          <div className="col invoice-to">
+                              <div className="text-gray-light"><h3>Charging</h3></div>
+                          </div>
+                      </div>
+                      <table border="0" cellSpacing="0" cellPadding="0">
+                          <thead>
                               <tr>
-                                  <td className="no">02</td>
-                                  <td className="text-left">Charge And Drive Charging Station</td>
-                                  <td className="unit"><h3>Electric vehicle charging station
-                                      1, 2nd Main Rd · +46 20 46 00 46
-                                      Open 24 hours</h3></td>
-                                  <td className="qty">20</td>
-                                  <td className="unit">CHAdeMO (1), CCS (1)</td>
-                                  <td className="total">CHAdeMO (1)</td>
-                                  <td className="unit"><Button variant="secondary" onClick={clickHandler}>Book</Button></td>
+                                  <th>Name</th>
+                                  <th className="text-left">Customer Id</th>
+                                  <th className="text-right">Start Time (hh:MM:ss) </th>
+                                  <th className="text-right">Time lapsed (MM:ss)</th>
+                                  <th className="text-right">Charging Status</th>
+                                  <th className="text-right">Unit Consumed (KWh)</th>
+                                  <th className="text-right">Start/Stop Transaction</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td className="no">Charzer Charging Station</td>
+                                  <td className="text-left">
+                                    customerid01002
+                                  </td>
+                                  <td className="unit">10:30:12</td>
+                                  <td className="qty">10:30</td>
+                                  <td className="unit">Yes</td>
+                                  <td className="total">100</td>
+                                  <td className="unit"><Button variant="secondary" onClick={(ev) => clickHandler(ev, 'true')}>Invoice</Button></td>
                               </tr>
                           </tbody>
                       </table>
