@@ -18,7 +18,7 @@ const Banner = ({ appName, token }) => {
        </div>
      </div>*/
     <div style={{ display: 'block', width: '100%', padding: 30 }}>
-      <h4>Sutainable solution provider</h4>
+      <h4>Sustainable solution provider</h4>
       <Carousel>
         <Carousel.Item interval={1500}>
           <img
