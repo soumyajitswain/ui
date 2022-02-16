@@ -1,60 +1,43 @@
-import Banner from './Banner';
-import EvMainView from './../Ev/EvMainView';
-import React from 'react';
-import agent from '../../agent';
-import { connect } from 'react-redux';
-import {
-  HOME_PAGE_LOADED,
-  HOME_PAGE_UNLOADED,
-  APPLY_TAG_FILTER
-} from '../../constants/actionTypes';
+import React, { useState, useEffect, setState } from 'react';
+import { Navigation } from "./parts/navigation";
+import { Header } from "./parts/header";
+import { Features } from "./parts/features";
+import { About } from "./parts/about";
+import { Services } from "./parts/services";
+import { Gallery } from "./parts/gallery";
+import { Testimonials } from "./parts/testimonials";
+import { Team } from "./parts/Team";
+import { Contact } from "./parts/contact";
+import JsonData from "./data/data.json";
+import SmoothScroll from "smooth-scroll";
+import  "./home.css";
 
-const Promise = global.Promise;
-
-const mapStateToProps = state => ({
-  ...state.home,
-  appName: state.common.appName,
-  token: state.common.token
+export const scroll = new SmoothScroll('a[href*="#"]', {
+  speed: 1000,
+  speedAsDuration: true,
 });
 
-const mapDispatchToProps = dispatch => ({
-  onClickTag: (tag, pager, payload) =>
-    dispatch({ type: APPLY_TAG_FILTER, tag, pager, payload }),
-  onLoad: (tab, pager, payload) =>
-    dispatch({ type: HOME_PAGE_LOADED, tab, pager, payload }),
-  onUnload: () =>
-    dispatch({  type: HOME_PAGE_UNLOADED })
-});
+const Home = props => {
 
-class Home extends React.Component {
-  componentWillMount() {
-    const tab = this.props.token ? 'feed' : 'all';
-    const articlesPromise = this.props.token ?
-      agent.Articles.feed :
-      agent.Articles.all;
-
-    this.props.onLoad(tab, articlesPromise, Promise.all([agent.Tags.getAll(), articlesPromise()]));
-  }
-
-  componentWillUnmount() {
-    this.props.onUnload();
-  }
-
-  render() {
+  const [landingPageData, setLandingPageData] = useState("");
+ 
+     useEffect(() => {
+      setLandingPageData(JsonData);
+    }, []);
     return (
-      <div className="home-page">
-
-        <Banner token={this.props.token} appName={this.props.appName} />
-
-        <div className="container page">
-          <div className="row">
-            <EvMainView />
-          </div>
-        </div>
-
-      </div>
+      <div>
+        <Navigation />
+        <Header data={landingPageData.Header} />
+        <Features data={landingPageData.Features} />
+        <About data={landingPageData.About} />
+        <Services data={landingPageData.Services} />
+        <Gallery data={landingPageData.Gallery}/>
+        <Testimonials data={landingPageData.Testimonials} />
+        <Team data={landingPageData.Team} />
+        <Contact data={landingPageData.Contact} />
+            </div>
     );
-  }
-}
+  };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+export default Home;
