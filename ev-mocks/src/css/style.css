@@ -171,8 +171,8 @@ hr {
   padding: 14px 34px;
   letter-spacing: 1px;
   margin: 0;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 300;
   border-radius: 25px;
   transition: all 0.5s linear;
   border: 0;
@@ -208,7 +208,7 @@ a:focus,
   display: table;
   width: 100%;
   padding: 0;
-  background: url(../img/intro-bg.jpg) center center no-repeat;
+  background: url(../img/evviron-intro.jpg) center center no-repeat;
   background-color: #e5e5e5;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -227,13 +227,22 @@ a:focus,
   margin-top: 0;
   margin-bottom: 10px;
 }
+.intro h2 {
+  font-family: "Raleway", sans-serif;
+  color: #fff;
+  font-size: 40px;
+  font-weight: 700;
+  text-transform: capitalize;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
 .intro h1 span {
   font-weight: 800;
   color: #5ca9fb;
 }
 .intro p {
   color: #fff;
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 300;
   line-height: 30px;
   margin: 0 auto;
