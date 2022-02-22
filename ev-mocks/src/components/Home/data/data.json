@@ -68,33 +68,33 @@
   "Services": [
     {
       "icon": "fa fa-wordpress",
-      "name": "Clean Trip Planner",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+      "name": "Green Trip Planner",
+      "text": "Recommend the best possible route with less carbon foot print. Find the shortest distance that will consume less CO2"
     },
     {
       "icon": "fa fa-cart-arrow-down",
       "name": "Locate Charging station",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+      "text": "Locate charging station though your route. The smart charging solution will enable your to have best services at our partner charging stations."
     },
     {
       "icon": "fa fa-cloud-download",
       "name": "Billing and Invoice",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+      "text": "Automated billing solutions that is dynamic and based on the traffic rate applicable in different geography."
     },
     {
       "icon": "fa fa-language",
       "name": "Power Managment",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+      "text": "Provide software solution to manage the grid to charging station load."
     },
     {
       "icon": "fa fa-plane",
-      "name": "Customer acquisition",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+      "name": "Customer Support",
+      "text": "Our innovative solution will provide you complete solution to manage customers and their experience."
     },
     {
       "icon": "fa fa-pie-chart",
       "name": "Charging Station Managment and Testing",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+      "text": "Complete solution will be provided to integrate the charging station with cloud systems. "
     }
   ],
   "Testimonials": [
