@@ -7,7 +7,8 @@ import {
   HOME_PAGE_UNLOADED,
   APPLY_TAG_FILTER
 } from '../../../../constants/actionTypes';
-import { Button } from 'react-bootstrap';
+import { Button, Col, Container, Dropdown, Form, Row } from 'react-bootstrap';
+import { MDBCol, MDBContainer, MDBRow } from 'mdb-react-ui-kit';
 
 const Promise = global.Promise;
 
@@ -23,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
   onLoad: (tab, pager, payload) =>
     dispatch({ type: HOME_PAGE_LOADED, tab, pager, payload }),
   onUnload: () =>
-    dispatch({  type: HOME_PAGE_UNLOADED })
+    dispatch({ type: HOME_PAGE_UNLOADED })
 });
 
 class ChargingStationBookingAndInvoiceHome extends React.Component {
@@ -40,7 +41,7 @@ class ChargingStationBookingAndInvoiceHome extends React.Component {
     this.props.onUnload();
   }
 
-  
+
   render() {
     return (
       <div className="home-page">
@@ -49,10 +50,11 @@ class ChargingStationBookingAndInvoiceHome extends React.Component {
 
         <div className="container page">
           <div className="row">
-            <ChargingStationBooking/>
+            <ChargingStationBooking />
           </div>
+          <div style={{'height':'20px'}}></div>
           <div className="row">
-             <ManageCharging/> 
+            <ManageCharging />
           </div>
         </div>
 
@@ -62,106 +64,96 @@ class ChargingStationBookingAndInvoiceHome extends React.Component {
 }
 
 const ChargingStationBooking = props => {
-  
+  const chargingStationList = [
+    { label: 'Charging Station 1', value: 'ChargingStation1' },
+    { label: 'Charging Station 2', value: 'ChargingStation2' },
+    { label: 'Charging Station 3', value: 'ChargingStation3' }];
+
   const clickHandler = (ev, f) => {
-      ev.preventDefault();
+    ev.preventDefault();
   }
   return (
 
-      <div id="invoice">
+    <MDBContainer fluid>
 
-          <div className="invoice overflow-auto">
-              <div style={{ 'minWidth': '600px' }}>
-                  <main>
-                      <div className="row contacts">
-                          <div className="col invoice-to">
-                              <div className="text-gray-light"><h3>Charging Stations:</h3></div>
-                          </div>
-                      </div>
-                      <table border="0" cellSpacing="0" cellPadding="0">
-                          <thead>
-                              <tr>
-                                  <th>#</th>
-                                  <th className="text-left">Name</th>
-                                  <th className="text-right">Customer Id </th>
-                                  <th className="text-right">Scheduled Time</th>
-                                  <th className="text-right">Connected</th>
-                                  <th className="text-right">Expected Unit</th>
-                                  <th className="text-right">Start/Stop Transaction</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                  <td className="no">01</td>
-                                  <td className="text-left">
-                                  Charzer Charging Station
-                                  </td>
-                                  <td className="unit">Electric vehicle charging station Shop No, 202, Kodigehalli Mai</td>
-                                  <td className="qty">10</td>
-                                  <td className="unit">CHAdeMO (1)</td>
-                                  <td className="total">CHAdeMO (1)</td>
-                                  <td className="unit"><Button variant="secondary" onClick={(ev) => clickHandler(ev, 'true')}>Book</Button></td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </main>
-              </div>
-
+      <MDBRow>
+        <MDBCol md='3' className='col-example'>
+        </MDBCol>
+        <MDBCol md='6'>
+          <div className="row">
+            <div className="col">
+              <div className="text-gray-light"><h3>Charging Stations:</h3></div>
+            </div>
           </div>
-      </div>
+        </MDBCol>
+      </MDBRow>
+      <MDBRow>
+        <MDBCol md='3' className='col-example'>
+        </MDBCol>
+        <MDBCol md='6'>
+          <Form >
+            <Form.Group className="mb-10" controlId='ChargingStationName'>
+              <Form.Label>Charging Station Name</Form.Label>
+              <Form.Control type="text" placeholder='Choose Name'></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId='customerId'>
+              <Form.Label>Customer Id</Form.Label>
+              <Form.Control type="text" placeholder='Customer Id'></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId='scheduledTime'>
+              <Form.Label>Scheduled Time</Form.Label>
+              <Form.Control type="text" placeholder='Scheduled Time'></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId='connected'>
+              <Form.Label>Connected?</Form.Label>
+              <Form.Control type="text" placeholder='connected'></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId='expectedUnit'>
+              <Form.Label>Expected Unit</Form.Label>
+              <Form.Control type="text" placeholder='expectedUnit'></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId='connected'>
+              <Form.Label>Start/Stop Transaction</Form.Label>
+              <Form.Control type="text" placeholder='Transaction'></Form.Control>
+            </Form.Group>
+            <Button variant='primary' type='submit'>Submit</Button>
+          </Form>
+        </MDBCol>
+      </MDBRow>
+    </MDBContainer>
 
   );
 };
 
 const ManageCharging = props => {
-  
+
   const clickHandler = (ev, f) => {
-      window.location = "/invoice";
-      ev.preventDefault();
+    window.location = "/invoice";
+    ev.preventDefault();
   }
   return (
 
-      <div id="invoice">
-
-          <div className="invoice">
-              <div style={{ 'minWidth': '100%' }}>
-                  <main>
-                      <div className="row contacts">
-                          <div className="col invoice-to">
-                              <div className="text-gray-light"><h3>Charging</h3></div>
-                          </div>
-                      </div>
-                      <table border="0" cellSpacing="0" cellPadding="0">
-                          <thead>
-                              <tr>
-                                  <th>Name</th>
-                                  <th className="text-left">Customer Id</th>
-                                  <th className="text-right">Start Time (hh:MM:ss) </th>
-                                  <th className="text-right">Time lapsed (MM:ss)</th>
-                                  <th className="text-right">Charging Status</th>
-                                  <th className="text-right">Unit Consumed (KWh)</th>
-                                  <th className="text-right">Start/Stop Transaction</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                  <td className="no">Charzer Charging Station</td>
-                                  <td className="text-left">
-                                    customerid01002
-                                  </td>
-                                  <td className="unit">10:30:12</td>
-                                  <td className="qty">10:30</td>
-                                  <td className="unit">Yes</td>
-                                  <td className="total">100</td>
-                                  <td className="unit"><Button variant="secondary" onClick={(ev) => clickHandler(ev, 'true')}>Invoice</Button></td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </main>
-              </div>
-
-          </div>
-      </div>
+    <MDBContainer>
+      <MDBRow>
+        <MDBCol md='3'></MDBCol>
+        <MDBCol md='6'>
+          <div className="text-gray-light"><h3>Charging Stations:</h3></div>
+        </MDBCol>
+      </MDBRow>
+      <MDBRow>
+        <MDBCol md='3'></MDBCol>
+        <MDBCol md='6'>
+          <Form>
+              Track the meter changes
+          </Form>
+        </MDBCol>
+      </MDBRow>
+    </MDBContainer>
 
   );
 };
