@@ -7,8 +7,9 @@ import {
   HOME_PAGE_UNLOADED,
   APPLY_TAG_FILTER
 } from '../../../../constants/actionTypes';
-import { Button, Col, Container, Dropdown, Form, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, Col, Container, Dropdown, Form, ProgressBar, Row } from 'react-bootstrap';
 import { MDBCol, MDBContainer, MDBRow } from 'mdb-react-ui-kit';
+import Payment from './invoice/payment';
 
 const Promise = global.Promise;
 
@@ -48,15 +49,18 @@ class ChargingStationBookingAndInvoiceHome extends React.Component {
 
         <Banner token={this.props.token} appName={this.props.appName} />
 
-        <div className="container page">
-          <div className="row">
+        <Container>
+          <Row>
             <ChargingStationBooking />
-          </div>
+          </Row>
           <div style={{'height':'20px'}}></div>
-          <div className="row">
+          <Row>
             <ManageCharging />
-          </div>
-        </div>
+          </Row>
+          <Row>
+            <Payment></Payment>
+          </Row>
+        </Container>
 
       </div>
     );
@@ -138,22 +142,42 @@ const ManageCharging = props => {
   }
   return (
 
-    <MDBContainer>
-      <MDBRow>
-        <MDBCol md='3'></MDBCol>
-        <MDBCol md='6'>
-          <div className="text-gray-light"><h3>Charging Stations:</h3></div>
-        </MDBCol>
-      </MDBRow>
-      <MDBRow>
-        <MDBCol md='3'></MDBCol>
-        <MDBCol md='6'>
+    <Container className='bgPrimary'>
+      <Row>
+        <Col md='3'></Col>
+        <Col md='6'>
+          <div className="text-gray-light"><h3>Charging Progress</h3></div>
+        </Col>
+      </Row>
+      <Row>
+        <Col md='3'></Col>
+        <Col md='6'>
           <Form>
-              Track the meter changes
+              <Form.Group className='mb-3' controlId='meterChargeId'>
+                <p>Unit Consumed:1000</p>
+                <p>Invoice Amount: <span>&#8377;</span>1000</p>
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='meterChargeId'>
+                <ProgressBar now='75' label='75%'></ProgressBar>
+              </Form.Group>
+
+              <Form.Group className='mb-3' controlId='meterChargeId'>
+                <p>Charging Completed <b>Conditional</b></p>
+              </Form.Group>
+
+              <Row className='mb'>
+                <Form.Group as={Col}>
+                  <Button variant='primary'>Cancel</Button>
+                </Form.Group> 
+                <Form.Group as={Col} >
+                  <Button variant='secondary'>Payment</Button>
+                </Form.Group>
+              </Row>
           </Form>
-        </MDBCol>
-      </MDBRow>
-    </MDBContainer>
+        </Col>
+      </Row>
+    </Container>
 
   );
 };
