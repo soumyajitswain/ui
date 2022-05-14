@@ -7,7 +7,7 @@ import {
   HOME_PAGE_UNLOADED,
   APPLY_TAG_FILTER
 } from '../../../../constants/actionTypes';
-import { Button, ButtonGroup, Col, Container, Dropdown, Form, ProgressBar, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, Card, Col, Container, Dropdown, Form, ProgressBar, Row } from 'react-bootstrap';
 import { MDBCol, MDBContainer, MDBRow } from 'mdb-react-ui-kit';
 import Payment from './invoice/payment';
 
@@ -79,7 +79,7 @@ const ChargingStationBooking = props => {
   return (
 
     <MDBContainer fluid>
-
+<Card>
       <MDBRow>
         <MDBCol md='3' className='col-example'>
         </MDBCol>
@@ -129,6 +129,7 @@ const ChargingStationBooking = props => {
           </Form>
         </MDBCol>
       </MDBRow>
+      </Card>
     </MDBContainer>
 
   );
@@ -142,7 +143,8 @@ const ManageCharging = props => {
   }
   return (
 
-    <Container className='bgPrimary'>
+    <Container fluid='true' className='p-0 bgPrimary'>
+      <Card>
       <Row>
         <Col md='3'></Col>
         <Col md='6'>
@@ -177,6 +179,8 @@ const ManageCharging = props => {
           </Form>
         </Col>
       </Row>
+      
+      </Card>
     </Container>
 
   );
