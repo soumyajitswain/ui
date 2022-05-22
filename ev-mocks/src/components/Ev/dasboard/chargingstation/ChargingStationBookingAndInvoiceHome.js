@@ -2,6 +2,7 @@ import Banner from '../../../Home/Banner';
 import React from 'react';
 import agent from '../../../../agent';
 import { connect } from 'react-redux';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   HOME_PAGE_LOADED,
   HOME_PAGE_UNLOADED,
@@ -28,20 +29,29 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: HOME_PAGE_UNLOADED })
 });
 
+const client = new W3CWebSocket('ws://127.0.0.1:8000'); 
+
 class ChargingStationBookingAndInvoiceHome extends React.Component {
-  componentWillMount() {
-    const tab = this.props.token ? 'feed' : 'all';
-    const articlesPromise = this.props.token ?
-      agent.Articles.feed :
-      agent.Articles.all;
-
-    this.props.onLoad(tab, articlesPromise, Promise.all([agent.Tags.getAll(), articlesPromise()]));
+   
+  componentDidMount() {
+    client.onopen = () => {
+      console.log('WebSocket Client Connected');
+    };
+    client.onmessage = (message) => {
+      console.log('Messgae from server '+message.data)
+    };
+    client.onclose = () => {
+      console.log('closed')
+      this.setState({
+        client: new W3CWebSocket('ws://127.0.0.1:8000')
+      })
+     
+    };
   }
 
-  componentWillUnmount() {
-    this.props.onUnload();
-  }
-
+  handleClick = () => {
+     client.send('hello');
+  };
 
   render() {
     return (
@@ -50,6 +60,9 @@ class ChargingStationBookingAndInvoiceHome extends React.Component {
         <Banner token={this.props.token} appName={this.props.appName} />
 
         <Container>
+          <Row>
+            <Button onClick={this.handleClick}>Test websocket</Button>
+          </Row>
           <Row>
             <ChargingStationBooking />
           </Row>
