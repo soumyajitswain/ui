@@ -1,8 +1,7 @@
 import Banner from '../../../Home/Banner';
-import React from 'react';
+import React, { useState } from 'react';
 import agent from '../../../../agent';
 import { connect } from 'react-redux';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   HOME_PAGE_LOADED,
   HOME_PAGE_UNLOADED,
@@ -11,6 +10,7 @@ import {
 import { Button, ButtonGroup, Card, Col, Container, Dropdown, Form, ProgressBar, Row } from 'react-bootstrap';
 import { MDBCol, MDBContainer, MDBRow } from 'mdb-react-ui-kit';
 import Payment from './invoice/payment';
+import WebSocketDemo from './WebsocketClient';
 
 const Promise = global.Promise;
 
@@ -29,30 +29,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: HOME_PAGE_UNLOADED })
 });
 
-const client = new W3CWebSocket('ws://127.0.0.1:8000'); 
+
+
 
 class ChargingStationBookingAndInvoiceHome extends React.Component {
-   
-  componentDidMount() {
-    client.onopen = () => {
-      console.log('WebSocket Client Connected');
-    };
-    client.onmessage = (message) => {
-      console.log('Messgae from server '+message.data)
-    };
-    client.onclose = () => {
-      console.log('closed')
-      this.setState({
-        client: new W3CWebSocket('ws://127.0.0.1:8000')
-      })
-     
-    };
-  }
-
-  handleClick = () => {
-     client.send('hello');
-  };
-
+  
   render() {
     return (
       <div className="home-page">
@@ -61,7 +42,7 @@ class ChargingStationBookingAndInvoiceHome extends React.Component {
 
         <Container>
           <Row>
-            <Button onClick={this.handleClick}>Test websocket</Button>
+           <WebSocketDemo></WebSocketDemo>
           </Row>
           <Row>
             <ChargingStationBooking />
