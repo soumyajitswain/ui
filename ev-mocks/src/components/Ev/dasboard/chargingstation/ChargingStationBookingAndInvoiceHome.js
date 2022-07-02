@@ -1,5 +1,6 @@
 import Banner from '../../../Home/Banner';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 import agent from '../../../../agent';
 import { connect } from 'react-redux';
 import {
@@ -29,37 +30,72 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: HOME_PAGE_UNLOADED })
 });
 
+const ChargingStationBookingAndInvoiceHome = (props) => {
+  const [socketUrl, setSocketUrl] = useState('ws://localhost:7000');
+  const [messageHistory, setMessageHistory] = useState([]);
 
+  const [authRequest, setAuthRequest] = useState(['{"action":"Authorize", "user_id":"1234"}'])
+  const [chargeStation, setChargeStation] = useState(['{"action":"ChargeStation", "user_id":"1234", "func":"GetAllChargeStations"}'])
+  const [chargeStationConnector, setChargeStationConnector] = useState(['{"action":"ChargeStation", "user_id":"1234", "func":"ConnectorDetailByChargeBox", "charge_box_id":"1"}'])
 
+  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
-class ChargingStationBookingAndInvoiceHome extends React.Component {
-  
-  render() {
-    return (
-      <div className="home-page">
+  useEffect(() => {
+    sendMessage(authRequest);
+    if (lastMessage !== null) {
+      setMessageHistory((prev) => prev.concat(lastMessage));
+    }
 
-        <Banner token={this.props.token} appName={this.props.appName} />
+    return () => {
+      setMessageHistory([]);
+    }
+  }, [lastMessage, setMessageHistory]);
 
-        <Container>
-          <Row>
-           <WebSocketDemo></WebSocketDemo>
-          </Row>
-          <Row>
-            <ChargingStationBooking />
-          </Row>
-          <div style={{'height':'20px'}}></div>
-          <Row>
-            <ManageCharging />
-          </Row>
-          <Row>
-            <Payment></Payment>
-          </Row>
-        </Container>
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
 
-      </div>
-    );
-  }
-}
+  return (
+    <div className="home-page">
+
+      <Banner token={props.token} appName={props.appName} />
+
+      <Container>
+        <Row>
+          <Col md='3' className='col-example'>
+            <p>
+              {lastMessage ? <span>Last message: {lastMessage.data}</span> : null}
+              <ul>
+                {messageHistory.map((message, idx) => (
+                  <span key={idx}>{message ? message.data : null}</span>
+                ))}
+              </ul>
+            </p>
+          </Col>
+          <Col md='8' className='col-example'>
+            <span>{connectionStatus}</span>
+          </Col>                  
+        </Row>
+        <Row>
+          <ChargingStationBooking />
+        </Row>
+        <div style={{ 'height': '20px' }}></div>
+        <Row>
+          <ManageCharging />
+        </Row>
+        <Row>
+          <Payment></Payment>
+        </Row>
+      </Container>
+
+    </div>
+  );
+
+};
 
 const ChargingStationBooking = props => {
   const chargingStationList = [
@@ -73,56 +109,56 @@ const ChargingStationBooking = props => {
   return (
 
     <MDBContainer fluid>
-<Card>
-      <MDBRow>
-        <MDBCol md='3' className='col-example'>
-        </MDBCol>
-        <MDBCol md='6'>
-          <div className="row">
-            <div className="col">
-              <div className="text-gray-light"><h3>Charging Stations:</h3></div>
+      <Card>
+        <MDBRow>
+          <MDBCol md='3' className='col-example'>
+          </MDBCol>
+          <MDBCol md='6'>
+            <div className="row">
+              <div className="col">
+                <div className="text-gray-light"><h3>Charging Stations:</h3></div>
+              </div>
             </div>
-          </div>
-        </MDBCol>
-      </MDBRow>
-      <MDBRow>
-        <MDBCol md='3' className='col-example'>
-        </MDBCol>
-        <MDBCol md='6'>
-          <Form >
-            <Form.Group className="mb-10" controlId='ChargingStationName'>
-              <Form.Label>Charging Station Name</Form.Label>
-              <Form.Control type="text" placeholder='Choose Name'></Form.Control>
-            </Form.Group>
+          </MDBCol>
+        </MDBRow>
+        <MDBRow>
+          <MDBCol md='3' className='col-example'>
+          </MDBCol>
+          <MDBCol md='6'>
+            <Form >
+              <Form.Group className="mb-10" controlId='ChargingStationName'>
+                <Form.Label>Charging Station Name</Form.Label>
+                <Form.Control type="text" placeholder='Choose Name'></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId='customerId'>
-              <Form.Label>Customer Id</Form.Label>
-              <Form.Control type="text" placeholder='Customer Id'></Form.Control>
-            </Form.Group>
+              <Form.Group className="mb-3" controlId='customerId'>
+                <Form.Label>Customer Id</Form.Label>
+                <Form.Control type="text" placeholder='Customer Id'></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId='scheduledTime'>
-              <Form.Label>Scheduled Time</Form.Label>
-              <Form.Control type="text" placeholder='Scheduled Time'></Form.Control>
-            </Form.Group>
+              <Form.Group className="mb-3" controlId='scheduledTime'>
+                <Form.Label>Scheduled Time</Form.Label>
+                <Form.Control type="text" placeholder='Scheduled Time'></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId='connected'>
-              <Form.Label>Connected?</Form.Label>
-              <Form.Control type="text" placeholder='connected'></Form.Control>
-            </Form.Group>
+              <Form.Group className="mb-3" controlId='connected'>
+                <Form.Label>Connected?</Form.Label>
+                <Form.Control type="text" placeholder='connected'></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId='expectedUnit'>
-              <Form.Label>Expected Unit</Form.Label>
-              <Form.Control type="text" placeholder='expectedUnit'></Form.Control>
-            </Form.Group>
+              <Form.Group className="mb-3" controlId='expectedUnit'>
+                <Form.Label>Expected Unit</Form.Label>
+                <Form.Control type="text" placeholder='expectedUnit'></Form.Control>
+              </Form.Group>
 
-            <Form.Group className="mb-3" controlId='connected'>
-              <Form.Label>Start/Stop Transaction</Form.Label>
-              <Form.Control type="text" placeholder='Transaction'></Form.Control>
-            </Form.Group>
-            <Button variant='primary' type='submit'>Submit</Button>
-          </Form>
-        </MDBCol>
-      </MDBRow>
+              <Form.Group className="mb-3" controlId='connected'>
+                <Form.Label>Start/Stop Transaction</Form.Label>
+                <Form.Control type="text" placeholder='Transaction'></Form.Control>
+              </Form.Group>
+              <Button variant='primary' type='submit'>Submit</Button>
+            </Form>
+          </MDBCol>
+        </MDBRow>
       </Card>
     </MDBContainer>
 
@@ -139,16 +175,16 @@ const ManageCharging = props => {
 
     <Container fluid='true' className='p-0 bgPrimary'>
       <Card>
-      <Row>
-        <Col md='3'></Col>
-        <Col md='6'>
-          <div className="text-gray-light"><h3>Charging Progress</h3></div>
-        </Col>
-      </Row>
-      <Row>
-        <Col md='3'></Col>
-        <Col md='6'>
-          <Form>
+        <Row>
+          <Col md='3'></Col>
+          <Col md='6'>
+            <div className="text-gray-light"><h3>Charging Progress</h3></div>
+          </Col>
+        </Row>
+        <Row>
+          <Col md='3'></Col>
+          <Col md='6'>
+            <Form>
               <Form.Group className='mb-3' controlId='meterChargeId'>
                 <p>Unit Consumed:1000</p>
                 <p>Invoice Amount: <span>&#8377;</span>1000</p>
@@ -165,15 +201,15 @@ const ManageCharging = props => {
               <Row className='mb'>
                 <Form.Group as={Col}>
                   <Button variant='primary'>Cancel</Button>
-                </Form.Group> 
+                </Form.Group>
                 <Form.Group as={Col} >
                   <Button variant='secondary'>Payment</Button>
                 </Form.Group>
               </Row>
-          </Form>
-        </Col>
-      </Row>
-      
+            </Form>
+          </Col>
+        </Row>
+
       </Card>
     </Container>
 

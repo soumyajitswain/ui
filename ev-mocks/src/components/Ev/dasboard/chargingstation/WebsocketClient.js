@@ -6,9 +6,14 @@ export const WebSocketDemo = () => {
   const [socketUrl, setSocketUrl] = useState('ws://localhost:7000');
   const [messageHistory, setMessageHistory] = useState([]);
 
+  const[authRequest, setAuthRequest] = useState(['{"action":"Authorize", "user_id":"1234"}'])
+  const[chargeStation, setChargeStation] = useState(['{"action":"ChargeStation", "user_id":"1234", "func":"GetAllChargeStations"}'])
+  const[chargeStationConnector, setChargeStationConnector] = useState(['{"action":"ChargeStation", "user_id":"1234", "func":"ConnectorDetailByChargeBox", "charge_box_id":"1"}'])
+
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
   useEffect(() => {
+    sendMessage(authRequest);
     if (lastMessage !== null) {
       setMessageHistory((prev) => prev.concat(lastMessage));
     }
@@ -19,7 +24,7 @@ export const WebSocketDemo = () => {
     []
   );
 
-  const handleClickSendMessage = useCallback(() => sendMessage('Hello'), []);
+  const handleClickSendMessage = useCallback(() => sendMessage(authRequest), []);
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
@@ -40,6 +45,7 @@ export const WebSocketDemo = () => {
       >
         Click Me to send 'Hello'
       </button>
+
       <span>The WebSocket is currently {connectionStatus}</span>
       {lastMessage ? <span>Last message: {lastMessage.data}</span> : null}
       <ul>
