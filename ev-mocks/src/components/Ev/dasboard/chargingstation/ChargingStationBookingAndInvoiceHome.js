@@ -18,7 +18,8 @@ const Promise = global.Promise;
 const mapStateToProps = state => ({
   ...state.home,
   appName: state.common.appName,
-  token: state.common.token
+  token: state.common.token,
+  messageHistory: state.messageHistory
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -41,7 +42,10 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
   useEffect(() => {
-    sendMessage(authRequest);
+    if (messageHistory.length == 0) {
+      sendMessage(authRequest);
+      sendMessage(chargeStation);
+    }
     if (lastMessage !== null) {
       setMessageHistory((prev) => prev.concat(lastMessage));
     }
@@ -66,22 +70,29 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
       <Container>
         <Row>
-          <Col md='3' className='col-example'>
+
+          <Col md='3' lg='3' className='col-example'>
+            {/** 
             <p>
               {lastMessage ? <span>Last message: {lastMessage.data}</span> : null}
               <ul>
-                {messageHistory.map((message, idx) => (
-                  <span key={idx}>{message ? message.data : null}</span>
-                ))}
-              </ul>
+              {messageHistory.map((message, idx) => (
+                <span key={idx}>{message ? message.data : null}</span>
+              ))}
+            </ul>
             </p>
+                */}
           </Col>
-          <Col md='8' className='col-example'>
-            <span>{connectionStatus}</span>
-          </Col>                  
+          <Col md='4' lg='7' className='col-example'>
+
+          </Col>
+          <Col md='2' lg='2' className='col-example' style={{ textAlign: 'right' }}>
+            <span style={{ backgroundColor: connectionStatus == 'Open' ? 'green' : 'red' }}>{connectionStatus}</span>
+          </Col>
+
         </Row>
         <Row>
-          <ChargingStationBooking />
+          <ChargingStationBooking props={props} messageHistory={messageHistory} />
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
@@ -97,7 +108,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
 };
 
-const ChargingStationBooking = props => {
+const ChargingStationBooking = ({ props, messageHistory }) => {
   const chargingStationList = [
     { label: 'Charging Station 1', value: 'ChargingStation1' },
     { label: 'Charging Station 2', value: 'ChargingStation2' },
@@ -106,12 +117,21 @@ const ChargingStationBooking = props => {
   const clickHandler = (ev, f) => {
     ev.preventDefault();
   }
+  if (messageHistory != null) {
+    console.log(props.messageHistory);
+  }
   return (
 
     <MDBContainer fluid>
       <Card>
         <MDBRow>
           <MDBCol md='3' className='col-example'>
+            <ul>
+              {messageHistory.map((message, idx) => (
+                <span key={idx}>{message ? message.data : null}</span>
+              ))}
+            </ul>
+
           </MDBCol>
           <MDBCol md='6'>
             <div className="row">
