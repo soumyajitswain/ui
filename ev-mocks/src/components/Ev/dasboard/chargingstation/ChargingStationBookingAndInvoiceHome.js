@@ -117,38 +117,44 @@ const ChargingStationBooking = ({ props, messageHistory }) => {
   const clickHandler = (ev, f) => {
     ev.preventDefault();
   }
-  if (messageHistory != null) {
-    console.log(props.messageHistory);
+
+  var selectBoxItems = messageHistory.map((message) => {
+
+    var message_json = JSON.parse(message.data)
+    var val_json = message_json.val
+    if (val_json != undefined) {
+      return val_json.map((ix) =>
+        <option>{ix.charge_point_vendor}</option>
+      )
+    }
+
   }
+  )
+
   return (
-
-    <MDBContainer fluid>
+    <Container fluid>
       <Card>
-        <MDBRow>
-          <MDBCol md='3' className='col-example'>
-            <ul>
-              {messageHistory.map((message, idx) => (
-                <span key={idx}>{message ? message.data : null}</span>
-              ))}
-            </ul>
-
-          </MDBCol>
-          <MDBCol md='6'>
+        <Row>
+          <Col md='3' className='col-example'>
+          </Col>
+          <Col md='6'>
             <div className="row">
               <div className="col">
                 <div className="text-gray-light"><h3>Charging Stations:</h3></div>
               </div>
             </div>
-          </MDBCol>
-        </MDBRow>
-        <MDBRow>
-          <MDBCol md='3' className='col-example'>
-          </MDBCol>
-          <MDBCol md='6'>
+          </Col>
+        </Row>
+        <Row>
+          <Col md='3' className='col-example'>
+          </Col>
+          <Col md='6'>
             <Form >
               <Form.Group className="mb-10" controlId='ChargingStationName'>
                 <Form.Label>Charging Station Name</Form.Label>
-                <Form.Control type="text" placeholder='Choose Name'></Form.Control>
+                <Form.Select aria-label='Default select example'>
+                  {selectBoxItems}
+                </Form.Select>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId='customerId'>
@@ -177,10 +183,10 @@ const ChargingStationBooking = ({ props, messageHistory }) => {
               </Form.Group>
               <Button variant='primary' type='submit'>Submit</Button>
             </Form>
-          </MDBCol>
-        </MDBRow>
+          </Col>
+        </Row>
       </Card>
-    </MDBContainer>
+    </Container>
 
   );
 };
