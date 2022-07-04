@@ -63,6 +63,10 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
     [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
   }[readyState];
 
+  const getConnectorDetail = (event) => {
+    console.log(event.target.value);
+  }
+
   return (
     <div className="home-page">
 
@@ -92,7 +96,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
         </Row>
         <Row>
-          <ChargingStationBooking props={props} messageHistory={messageHistory} />
+          <ChargingStationBooking props={props} messageHistory={messageHistory} getConnectorDetail={getConnectorDetail} />
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
@@ -108,26 +112,20 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
 };
 
-const ChargingStationBooking = ({ props, messageHistory }) => {
-  const chargingStationList = [
-    { label: 'Charging Station 1', value: 'ChargingStation1' },
-    { label: 'Charging Station 2', value: 'ChargingStation2' },
-    { label: 'Charging Station 3', value: 'ChargingStation3' }];
+const ChargingStationBooking = ({ props, messageHistory, getConnectorDetail }) => {
 
   const clickHandler = (ev, f) => {
     ev.preventDefault();
   }
 
   var selectBoxItems = messageHistory.map((message) => {
-
     var message_json = JSON.parse(message.data)
     var val_json = message_json.val
-    if (val_json != undefined) {
+    if (message_json.action == 'ChargeStation' && message_json.func == 'GetAllChargeStations') {
       return val_json.map((ix) =>
         <option>{ix.charge_point_vendor}</option>
       )
     }
-
   }
   )
 
@@ -152,7 +150,7 @@ const ChargingStationBooking = ({ props, messageHistory }) => {
             <Form >
               <Form.Group className="mb-10" controlId='ChargingStationName'>
                 <Form.Label>Charging Station Name</Form.Label>
-                <Form.Select aria-label='Default select example'>
+                <Form.Select aria-label='Default select example' onChange={(event) => getConnectorDetail(event)}>
                   {selectBoxItems}
                 </Form.Select>
               </Form.Group>
