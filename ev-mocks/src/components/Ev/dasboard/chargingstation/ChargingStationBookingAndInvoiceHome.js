@@ -64,7 +64,11 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
   }[readyState];
 
   const getConnectorDetail = (event) => {
-    console.log(event.target.value);
+    let req = '{"action":"ChargeStation", "user_id":"1234", "func":"ConnectorDetailByChargeBox", "charge_box_id":"cb_id"}';
+    req = req.replace('cb_id', event.target.value);
+    setChargeStationConnector([req]);
+    sendMessage(chargeStationConnector);
+    console.log(req);
   }
 
   return (
@@ -117,15 +121,21 @@ const ChargingStationBooking = ({ props, messageHistory, getConnectorDetail }) =
   const clickHandler = (ev, f) => {
     ev.preventDefault();
   }
+  const [chargeBoxSelection, setChargeBoxSelection] = useState('');
 
   var selectBoxItems = messageHistory.map((message) => {
     var message_json = JSON.parse(message.data)
     var val_json = message_json.val
+    console.log(message_json.action+' '+message_json.func);
+    var select_html = '';
     if (message_json.action == 'ChargeStation' && message_json.func == 'GetAllChargeStations') {
-      return val_json.map((ix) =>
-        <option>{ix.charge_point_vendor}</option>
+      select_html = val_json.map((ix) =>
+        <option value={ix.charge_box_id}>{ix.charge_point_vendor}</option>
+        
       )
+      
     }
+    return select_html;
   }
   )
 
