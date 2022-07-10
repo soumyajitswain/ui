@@ -34,6 +34,8 @@ const mapDispatchToProps = dispatch => ({
 const ChargingStationBookingAndInvoiceHome = (props) => {
   const [socketUrl, setSocketUrl] = useState('ws://localhost:7000');
   const [messageHistory, setMessageHistory] = useState([]);
+  const [chargeStationDetail, setChargeStationDetail] = useState([]);
+
 
   const [authRequest, setAuthRequest] = useState(['{"action":"Authorize", "user_id":"1234"}'])
   const [chargeStation, setChargeStation] = useState(['{"action":"ChargeStation", "user_id":"1234", "func":"GetAllChargeStations"}'])
@@ -46,9 +48,18 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
       sendMessage(authRequest);
       sendMessage(chargeStation);
     }
+
     if (lastMessage !== null) {
       setMessageHistory((prev) => prev.concat(lastMessage));
+
+      var message_json = JSON.parse(lastMessage.data);
+      if (message_json.action == 'ChargeStation' && message_json.func == 'GetAllChargeStations') {
+        setChargeStationDetail(message_json);
+      }
+      console.log(chargeStationDetail)
     }
+
+
 
     return () => {
       setMessageHistory([]);
@@ -100,7 +111,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
         </Row>
         <Row>
-          <ChargingStationBooking props={props} messageHistory={messageHistory} getConnectorDetail={getConnectorDetail} />
+          <ChargingStationBooking props={props} messageHistory={messageHistory} getConnectorDetail={getConnectorDetail} chargeStationDetail={chargeStationDetail} />
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
@@ -116,29 +127,71 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
 };
 
-const ChargingStationBooking = ({ props, messageHistory, getConnectorDetail }) => {
+const ChargingStationBooking = ({ props, messageHistory, getConnectorDetail, chargeStationDetail }) => {
 
-  const clickHandler = (ev, f) => {
-    ev.preventDefault();
-  }
   const [chargeBoxSelection, setChargeBoxSelection] = useState('');
+  const [connectorDetail, setConnectorDetail] = useState('');
 
-  var selectBoxItems = messageHistory.map((message) => {
-    var message_json = JSON.parse(message.data)
-    var val_json = message_json.val
-    console.log(message_json.action+' '+message_json.func);
-    var select_html = '';
-    if (message_json.action == 'ChargeStation' && message_json.func == 'GetAllChargeStations') {
-      select_html = val_json.map((ix) =>
-        <option value={ix.charge_box_id}>{ix.charge_point_vendor}</option>
-        
-      )
-      
+
+  //https://www.digitalocean.com/community/conceptual_articles/react-loading-components-dynamically-hooks
+
+  useEffect(() => {
+    async function loadChargeStationDetail() {
+      const loadChargeStationPromise =
+        chargeStationDetail.val.map((ix) => {
+          return <option value={ix.charge_box_id}>{ix.charge_point_vendor}</option>
+        });
+
+      Promise.all(loadChargeStationPromise).then(setChargeBoxSelection);
     }
-    return select_html;
-  }
-  )
 
+    async function loadConenctorDetail() {
+      const connectorDetailPromise = messageHistory
+        .map((message) => {
+          var message_json = JSON.parse(message.data)
+          var val_json = message_json.val
+          console.log(message_json.action + ' ' + message_json.func);
+          var connectorDetail = 'NA';
+          if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
+            console.log(val_json);
+            connectorDetail = val_json.map((ix) =>
+              <option value={ix.charge_box_id}>{ix.charge_point_vendor}</option>
+            )
+          } 
+          console.log(connectorDetail);
+          return connectorDetail;
+        })
+
+      Promise.all(connectorDetailPromise).then(setConnectorDetail);
+    }
+    loadChargeStationDetail();
+    loadConenctorDetail();
+    console.log(connectorDetail);
+  }, [chargeStationDetail, messageHistory])
+  /** 
+  var selectBoxItems = messageHistory
+    .map((message) => {
+      var message_json = JSON.parse(message.data)
+      var val_json = message_json.val
+      console.log(message_json.action + ' ' + message_json.func);
+      var chargeStationList = '';
+      var connectorDetail = '';
+      if (message_json.action == 'ChargeStation' && message_json.func == 'GetAllChargeStations') {
+        chargeStationList = val_json.map((ix) =>
+          <option value={ix.charge_box_id}>{ix.charge_point_vendor}</option>
+        )
+      }
+      if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
+        console.log(val_json);
+        connectorDetail = val_json.map((ix) =>
+          <option value={ix.charge_box_id}>{ix.charge_point_vendor}</option>
+        )
+      }
+
+      return chargeStationList;
+    }
+    )
+*/
   return (
     <Container fluid>
       <Card>
@@ -161,7 +214,7 @@ const ChargingStationBooking = ({ props, messageHistory, getConnectorDetail }) =
               <Form.Group className="mb-10" controlId='ChargingStationName'>
                 <Form.Label>Charging Station Name</Form.Label>
                 <Form.Select aria-label='Default select example' onChange={(event) => getConnectorDetail(event)}>
-                  {selectBoxItems}
+                  {chargeBoxSelection}
                 </Form.Select>
               </Form.Group>
 
