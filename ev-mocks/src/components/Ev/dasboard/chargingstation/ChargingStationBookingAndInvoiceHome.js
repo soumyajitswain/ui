@@ -35,6 +35,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
   const [socketUrl, setSocketUrl] = useState('ws://localhost:7000');
   const [messageHistory, setMessageHistory] = useState([]);
   const [chargeStationDetail, setChargeStationDetail] = useState([]);
+  const [connectorResponse, setConnectorResponse] = useState([]);
 
 
   const [authRequest, setAuthRequest] = useState(['{"action":"Authorize", "user_id":"1234"}'])
@@ -55,11 +56,15 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
       var message_json = JSON.parse(lastMessage.data);
       if (message_json.action == 'ChargeStation' && message_json.func == 'GetAllChargeStations') {
         setChargeStationDetail(message_json);
+      } else if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
+
+        setConnectorResponse(message_json);
+        //console.log(message_json)
+        console.log(connectorResponse);
       }
-      console.log(chargeStationDetail)
+
+
     }
-
-
 
     return () => {
       setMessageHistory([]);
@@ -79,6 +84,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
     req = req.replace('cb_id', event.target.value);
     setChargeStationConnector([req]);
     sendMessage(chargeStationConnector);
+
     console.log(req);
   }
 
@@ -91,16 +97,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
         <Row>
 
           <Col md='3' lg='3' className='col-example'>
-            {/** 
-            <p>
-              {lastMessage ? <span>Last message: {lastMessage.data}</span> : null}
-              <ul>
-              {messageHistory.map((message, idx) => (
-                <span key={idx}>{message ? message.data : null}</span>
-              ))}
-            </ul>
-            </p>
-                */}
+            { }
           </Col>
           <Col md='4' lg='7' className='col-example'>
 
@@ -111,7 +108,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
         </Row>
         <Row>
-          <ChargingStationBooking props={props} messageHistory={messageHistory} getConnectorDetail={getConnectorDetail} chargeStationDetail={chargeStationDetail} />
+          <ChargingStationBooking props={props} messageHistory={messageHistory} connectorResponse={connectorResponse} chargeStationDetail={chargeStationDetail} />
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
@@ -127,7 +124,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
 };
 
-const ChargingStationBooking = ({ props, messageHistory, getConnectorDetail, chargeStationDetail }) => {
+const ChargingStationBooking = ({ props, messageHistory, connectorResponse, chargeStationDetail }) => {
 
   const [chargeBoxSelection, setChargeBoxSelection] = useState('');
   const [connectorDetail, setConnectorDetail] = useState('');
@@ -151,14 +148,13 @@ const ChargingStationBooking = ({ props, messageHistory, getConnectorDetail, cha
           var message_json = JSON.parse(message.data)
           var val_json = message_json.val
           console.log(message_json.action + ' ' + message_json.func);
-          var connectorDetail = 'NA';
           if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
             console.log(val_json);
-            connectorDetail = val_json.map((ix) =>
-              <option value={ix.charge_box_id}>{ix.charge_point_vendor}</option>
+            console.log(val_json[0]);
+            setConnectorDetail(
+              <option value={val_json[0].charge_box_id}>{val_json[0].charge_point_vendor}</option>
             )
-          } 
-          console.log(connectorDetail);
+          }
           return connectorDetail;
         })
 
