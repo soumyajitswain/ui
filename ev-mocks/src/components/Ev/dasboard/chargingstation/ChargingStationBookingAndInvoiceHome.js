@@ -57,9 +57,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
       if (message_json.action == 'ChargeStation' && message_json.func == 'GetAllChargeStations') {
         setChargeStationDetail(message_json);
       } else if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
-
         setConnectorResponse(message_json);
-        //console.log(message_json)
         console.log(connectorResponse);
       }
 
@@ -108,7 +106,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
         </Row>
         <Row>
-          <ChargingStationBooking props={props} messageHistory={messageHistory} connectorResponse={connectorResponse} chargeStationDetail={chargeStationDetail} />
+          <ChargingStationBooking getConnectorDetail={getConnectorDetail} messageHistory={messageHistory} connectorResponse={connectorResponse} chargeStationDetail={chargeStationDetail} />
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
@@ -124,7 +122,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
 };
 
-const ChargingStationBooking = ({ props, messageHistory, connectorResponse, chargeStationDetail }) => {
+const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorResponse, chargeStationDetail }) => {
 
   const [chargeBoxSelection, setChargeBoxSelection] = useState('');
   const [connectorDetail, setConnectorDetail] = useState('');
@@ -143,25 +141,22 @@ const ChargingStationBooking = ({ props, messageHistory, connectorResponse, char
     }
 
     async function loadConenctorDetail() {
-      const connectorDetailPromise = messageHistory
-        .map((message) => {
-          var message_json = JSON.parse(message.data)
-          var val_json = message_json.val
-          console.log(message_json.action + ' ' + message_json.func);
-          if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
-            console.log(val_json);
-            console.log(val_json[0]);
-            setConnectorDetail(
-              <option value={val_json[0].charge_box_id}>{val_json[0].charge_point_vendor}</option>
-            )
-          }
-          return connectorDetail;
-        })
-
-      Promise.all(connectorDetailPromise).then(setConnectorDetail);
+        var message_json = connectorResponse;
+        var val_json = message_json.val
+        console.log(message_json.action + ' ' + message_json.func);
+        if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
+          console.log(val_json);
+          console.log(val_json[0]);
+          setConnectorDetail(
+            <option value={val_json[0].charge_box_id}>{val_json[0].charge_point_vendor}</option>
+          )
+        }
+        return connectorDetail;
     }
+    
     loadChargeStationDetail();
     loadConenctorDetail();
+    console.log(connectorResponse);
     console.log(connectorDetail);
   }, [chargeStationDetail, messageHistory])
   /** 
