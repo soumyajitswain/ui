@@ -58,7 +58,6 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
         setChargeStationDetail(message_json);
       } else if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
         setConnectorResponse(message_json);
-        console.log(connectorResponse);
       }
 
 
@@ -81,7 +80,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
     let req = '{"action":"ChargeStation", "user_id":"1234", "func":"ConnectorDetailByChargeBox", "charge_box_id":"cb_id"}';
     req = req.replace('cb_id', event.target.value);
     setChargeStationConnector([req]);
-    sendMessage(chargeStationConnector);
+    sendMessage(req);
 
     console.log(req);
   }
@@ -143,22 +142,25 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
 
     async function loadConenctorDetail() {
       var message_json = await connectorResponse;
-      console.log(connectorResponse);
       var val_json = message_json.val
-      console.log(message_json.action + ' ' + message_json.func);
       if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
         var chargeStationDetail = await chargeBoxDetailLocal.val.filter(k => k.charge_box_id === val_json[0][0].charge_box_id).map((ix) => {
           return (
-            <CardGroup>
-              <Card.Title>{ix.charge_point_vendor}</Card.Title>
-              <br/>
-              <Card.Text key={ix.charge_box_id}>Key:{ix.charge_box_id}</Card.Text>
-            </CardGroup>
+            <Card>
+                <Card.Title>{ix.charge_point_vendor}</Card.Title>
+              <Card.Body>
+                <Card.Text key={ix.charge_box_id}>Charge Box Unique Id:{ix.charge_box_id}</Card.Text>
+                <Card.Text key={ix.ocpp_protocol}>OCPP Version:{ix.ocpp_protocol}</Card.Text>
+                <Card.Text key={ix.charge_point_model}>Charge Point Model:{ix.charge_point_model}</Card.Text>
+                <Card.Text key={ix.location_latitude}>Latitude:{ix.location_latitude}</Card.Text>
+                <Card.Text key={ix.location_longitude}>Latitude:{ix.location_longitude}</Card.Text>
+              </Card.Body>
+            </Card>
           )
         });
 
         setConnectorDetail(
-          <Card style={{width:'16rem'}}>
+          <Card style={{ width: '16rem' }}>
             <Card.Body>
               {chargeStationDetail}
               <Card.Text>Charge Box Id:{val_json[0][0].charge_box_id}</Card.Text>
