@@ -127,8 +127,7 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
   const [connectorDetail, setConnectorDetail] = useState('');
   const [chargeBoxDetailLocal, setChargeBoxDetailLocal] = useState('');
 
-
-  //https://www.digitalocean.com/community/conceptual_articles/react-loading-components-dynamically-hooks
+  let startTransactionRequest = JSON.parse('[{"action":"StartTransaction", "user_id":"1234", "func":"start_transaction"}]');
 
   useEffect(() => {
     async function loadChargeStationDetail() {
@@ -155,6 +154,7 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
                 <Card.Text key={ix.location_latitude}>Latitude:{ix.location_latitude}</Card.Text>
                 <Card.Text key={ix.location_longitude}>Latitude:{ix.location_longitude}</Card.Text>
               </Card.Body>
+              {startTransactionRequest.charge_box_id = ix.charge_box_id}
             </Card>
           )
         });
@@ -163,14 +163,17 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
           <Card style={{ width: '16rem' }}>
             <Card.Body>
               {chargeStationDetail}
-              <Card.Text>Charge Box Id:{val_json[0][0].charge_box_id}</Card.Text>
+              <Card.Text>Connector Id:{val_json[0][1].connector_id}</Card.Text>
               <Card.Text>Notes: {val_json[0][0].note}</Card.Text>
               <Card.Text>status:{val_json[0][2].status}</Card.Text>
+              {startTransactionRequest.connector_id = val_json[0][1].connector_id}
+              
             </Card.Body>
           </Card>
-
         )
+
       }
+      console.log(startTransactionRequest);
       return connectorDetail;
     }
 
@@ -217,20 +220,12 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
                 <Form.Control type="text" placeholder='Scheduled Time'></Form.Control>
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId='connected'>
-                <Form.Label>Connected?</Form.Label>
-                <Form.Control type="text" placeholder='connected'></Form.Control>
-              </Form.Group>
 
               <Form.Group className="mb-3" controlId='expectedUnit'>
                 <Form.Label>Expected Unit</Form.Label>
                 <Form.Control type="text" placeholder='expectedUnit'></Form.Control>
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId='connected'>
-                <Form.Label>Start/Stop Transaction</Form.Label>
-                <Form.Control type="text" placeholder='Transaction'></Form.Control>
-              </Form.Group>
               <Button variant='primary' type='submit'>Submit</Button>
             </Form>
           </Col>
