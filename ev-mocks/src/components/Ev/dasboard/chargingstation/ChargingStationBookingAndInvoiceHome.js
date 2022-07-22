@@ -105,7 +105,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
         </Row>
         <Row>
-          <ChargingStationBooking getConnectorDetail={getConnectorDetail} messageHistory={messageHistory} connectorResponse={connectorResponse} chargeStationDetail={chargeStationDetail} />
+          <ChargingStationBooking getConnectorDetail={getConnectorDetail} messageHistory={messageHistory} connectorResponse={connectorResponse} chargeStationDetail={chargeStationDetail} sendMessage={sendMessage} lastMessage={lastMessage} />
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
@@ -121,13 +121,14 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
 };
 
-const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorResponse, chargeStationDetail }) => {
+const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorResponse, chargeStationDetail, sendMessage, lastMessage }) => {
 
   const [chargeBoxSelection, setChargeBoxSelection] = useState('');
   const [connectorDetail, setConnectorDetail] = useState('');
   const [chargeBoxDetailLocal, setChargeBoxDetailLocal] = useState('');
+  const [startTransactionReqLocal, setStartTransactionReqLocal] = useState('');
 
-  let startTransactionRequest = JSON.parse('[{"action":"StartTransaction", "user_id":"1234", "func":"start_transaction"}]');
+  let startTransactionRequest = JSON.parse('{"action":"StartTransaction", "user_id":"1234", "func":"start_transaction"}');
 
   useEffect(() => {
     async function loadChargeStationDetail() {
@@ -146,7 +147,7 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
         var chargeStationDetail = await chargeBoxDetailLocal.val.filter(k => k.charge_box_id === val_json[0][0].charge_box_id).map((ix) => {
           return (
             <Card>
-                <Card.Title>{ix.charge_point_vendor}</Card.Title>
+              <Card.Title>{ix.charge_point_vendor}</Card.Title>
               <Card.Body>
                 <Card.Text key={ix.charge_box_id}>Charge Box Unique Id:{ix.charge_box_id}</Card.Text>
                 <Card.Text key={ix.ocpp_protocol}>OCPP Version:{ix.ocpp_protocol}</Card.Text>
@@ -166,23 +167,29 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
               <Card.Text>Connector Id:{val_json[0][1].connector_id}</Card.Text>
               <Card.Text>Notes: {val_json[0][0].note}</Card.Text>
               <Card.Text>status:{val_json[0][2].status}</Card.Text>
-              {startTransactionRequest.connector_id = val_json[0][1].connector_id}
-              
+              {startTransactionRequest.connector_pk = val_json[0][1].connector_pk}
+
             </Card.Body>
           </Card>
         )
 
       }
-      console.log(startTransactionRequest);
+      setStartTransactionReqLocal(startTransactionRequest);
       return connectorDetail;
     }
 
     loadChargeStationDetail();
     loadConenctorDetail();
-    console.log(connectorResponse);
-    console.log(connectorDetail);
   }, [chargeStationDetail, messageHistory])
 
+  const startTransactionFunction = (event) => {
+    
+    var startTransactionRequest1 = JSON.stringify(startTransactionReqLocal);
+    console.log(startTransactionRequest1);
+    sendMessage(startTransactionRequest1);
+    console.log(lastMessage.data);
+    event.preventDefault();
+  };
   return (
     <Container fluid>
       <Card>
@@ -226,7 +233,7 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
                 <Form.Control type="text" placeholder='expectedUnit'></Form.Control>
               </Form.Group>
 
-              <Button variant='primary' type='submit'>Submit</Button>
+              <Button variant='primary' type='button' onClick={startTransactionFunction}>Submit</Button>
             </Form>
           </Col>
           <Col md='3' className='col-example' style={{ border: '0px solid black' }}>
