@@ -206,7 +206,6 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
         </Row>
         <Row>
           <Col md='3' className='col-example'>
-
           </Col>
           <Col md='6'>
             <Form >
@@ -218,8 +217,8 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
               </Form.Group>
 
               <Form.Group className="mb-3" controlId='customerId'>
-                <Form.Label>Customer Id</Form.Label>
-                <Form.Control type="text" placeholder='Customer Id'></Form.Control>
+                <Form.Label>Connectors</Form.Label>
+                <Form.Control type="text" placeholder='Connectors'></Form.Control>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId='scheduledTime'>
@@ -227,13 +226,7 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
                 <Form.Control type="text" placeholder='Scheduled Time'></Form.Control>
               </Form.Group>
 
-
-              <Form.Group className="mb-3" controlId='expectedUnit'>
-                <Form.Label>Expected Unit</Form.Label>
-                <Form.Control type="text" placeholder='expectedUnit'></Form.Control>
-              </Form.Group>
-
-              <Button variant='primary' type='button' onClick={startTransactionFunction}>Submit</Button>
+              <Button variant='primary' type='button' onClick={startTransactionFunction}>Start</Button>
             </Form>
           </Col>
           <Col md='3' className='col-example' style={{ border: '0px solid black' }}>
