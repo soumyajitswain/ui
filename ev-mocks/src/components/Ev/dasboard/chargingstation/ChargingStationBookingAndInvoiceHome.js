@@ -36,6 +36,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
   const [messageHistory, setMessageHistory] = useState([]);
   const [chargeStationDetail, setChargeStationDetail] = useState([]);
   const [connectorResponse, setConnectorResponse] = useState([]);
+  const [transactionResponse, setTransactionResponse] = useState([]);
 
 
   const [authRequest, setAuthRequest] = useState(['{"action":"Authorize", "user_id":"1234"}'])
@@ -58,8 +59,9 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
         setChargeStationDetail(message_json);
       } else if (message_json.action == 'ChargeStation' && message_json.func == 'ConnectorDetailByChargeBox') {
         setConnectorResponse(message_json);
+      } else if (message_json.action == 'StartTransaction' && message_json.func == 'start_transaction') {
+        setTransactionResponse(message_json);
       }
-
 
     }
 
@@ -105,7 +107,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
         </Row>
         <Row>
-          <ChargingStationBooking getConnectorDetail={getConnectorDetail} messageHistory={messageHistory} connectorResponse={connectorResponse} chargeStationDetail={chargeStationDetail} sendMessage={sendMessage} lastMessage={lastMessage} />
+          <ChargingStationBooking getConnectorDetail={getConnectorDetail} messageHistory={messageHistory} connectorResponse={connectorResponse} chargeStationDetail={chargeStationDetail} sendMessage={sendMessage} transactionResponse={transactionResponse} />
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
@@ -121,7 +123,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
 
 };
 
-const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorResponse, chargeStationDetail, sendMessage, lastMessage }) => {
+const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorResponse, chargeStationDetail, sendMessage, transactionResponse }) => {
 
   const [chargeBoxSelection, setChargeBoxSelection] = useState('');
   const [connectorDetail, setConnectorDetail] = useState('');
@@ -183,13 +185,15 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
   }, [chargeStationDetail, messageHistory])
 
   const startTransactionFunction = (event) => {
-    
-    var startTransactionRequest1 = JSON.stringify(startTransactionReqLocal);
-    console.log(startTransactionRequest1);
-    sendMessage(startTransactionRequest1);
-    console.log(lastMessage.data);
-    event.preventDefault();
-  };
+
+      var startTransactionRequest1 = JSON.stringify(startTransactionReqLocal);
+      console.log(startTransactionRequest1);
+      sendMessage(startTransactionRequest1);
+      var response =  transactionResponse;
+      console.log(response);
+      event.preventDefault();
+    };
+ 
   return (
     <Container fluid>
       <Card>
