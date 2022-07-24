@@ -61,6 +61,8 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
         setConnectorResponse(message_json);
       } else if (message_json.action == 'StartTransaction' && message_json.func == 'start_transaction') {
         setTransactionResponse(message_json);
+      } else if (message_json.action == 'StartTransaction' && message_json.func == 'transaction_status') {
+        setTransactionResponse(message_json);
       }
 
     }
@@ -111,7 +113,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
-          <ManageCharging transactionResponse={transactionResponse} />
+          <ManageCharging  transactionResponse={transactionResponse} sendMessage={sendMessage}/>
         </Row>
         <Row>
           <Payment></Payment>
@@ -242,35 +244,48 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
   );
 };
 
-const ManageCharging = (transactionResponse) => {
-  
+const ManageCharging = ( {transactionResponse, sendMessage} ) => {
+
   const [transacrionResLocal, setTransactionResLocal] = useState(null);
   const [unitConsumed, setUnitConsumed] = useState(null);
   const [price, setPrice] = useState(null);
   const [transactionId, setTransactionId] = useState(null);
 
-  useEffect(() => {
-    
-    async function loadTransactionResponse() {
-      var response = transactionResponse.transactionResponse;
-      setTransactionResLocal(response);
-      var action = response.action;
+  console.log(transactionResponse);
+
+  var response = transactionResponse;
+
+  useEffect((response) => {
+    //var response = transactionResponse.transactionResponse;
+    console.log(transactionResponse);
+    async function loadTransactionResponse(transactionResponse) {
+      console.log(transactionResponse);
+
+      setTransactionResLocal(transactionResponse);
+      var action = transactionResponse.action;
       if (action !== undefined) {
-        var transactionId = response.val[0].transaction_pk 
-        var unit = response.val[0].start_value;
+        var transactionId = transactionResponse.val[0].transaction_pk
+        var unit = transactionResponse.val[0].start_value;
         var price = unit * 1000;
         setUnitConsumed(unit);
         setPrice(price);
         setTransactionId(transactionId);
       }
     }
-    
-    var poolTrans = setInterval(()=>{
-        //console.log("1s interval")
-    }, 600000);
 
-    loadTransactionResponse();
-  }, [transactionResponse]);
+    loadTransactionResponse(transactionResponse);
+    
+  }, [transactionResponse, sendMessage]);
+
+  let transactionRequest = JSON.parse('{"action":"StartTransaction", "user_id":"1234", "func":"transaction_status"}');
+
+  if (transactionId !== null) {
+    var poolTrans = setInterval(() => {
+      transactionRequest.transaction_id = transactionId;
+      console.log(transactionRequest);
+      sendMessage(JSON.stringify(transactionRequest));
+    }, 30000);
+  }
 
   return (
 
