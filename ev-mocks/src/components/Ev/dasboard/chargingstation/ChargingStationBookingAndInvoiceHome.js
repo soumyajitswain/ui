@@ -243,22 +243,34 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
 };
 
 const ManageCharging = (transactionResponse) => {
+  
   const [transacrionResLocal, setTransactionResLocal] = useState(null);
   const [unitConsumed, setUnitConsumed] = useState(null);
   const [price, setPrice] = useState(null);
+  const [transactionId, setTransactionId] = useState(null);
 
   useEffect(() => {
-    var response = transactionResponse.transactionResponse;
-    setTransactionResLocal(response);
-    var action = response.action;
-    if (action !== undefined) {
-      var unit = response.val[0].start_value;
-      var price = unit * 1000;
-      setUnitConsumed(unit);
-      setPrice(price);
+    
+    async function loadTransactionResponse() {
+      var response = transactionResponse.transactionResponse;
+      setTransactionResLocal(response);
+      var action = response.action;
+      if (action !== undefined) {
+        var transactionId = response.val[0].transaction_pk 
+        var unit = response.val[0].start_value;
+        var price = unit * 1000;
+        setUnitConsumed(unit);
+        setPrice(price);
+        setTransactionId(transactionId);
+      }
     }
-  }, [transactionResponse]);
+    
+    var poolTrans = setInterval(()=>{
+        //console.log("1s interval")
+    }, 600000);
 
+    loadTransactionResponse();
+  }, [transactionResponse]);
 
   return (
 
@@ -277,6 +289,7 @@ const ManageCharging = (transactionResponse) => {
               <Form.Group className='mb-3' controlId='meterChargeId'>
                 <p>Unit Consumed:{unitConsumed}</p>
                 <p>Invoice Amount: <span>&#8377;</span>{price}</p>
+                <p>Transaction Id: {transactionId}</p>
               </Form.Group>
 
               <Form.Group className='mb-3' controlId='meterChargeId'>
@@ -284,7 +297,7 @@ const ManageCharging = (transactionResponse) => {
               </Form.Group>
 
               <Form.Group className='mb-3' controlId='meterChargeId'>
-                <p>Charging Completed <b>Conditional</b></p>
+                <p>Charging Status <b>Inprogress</b></p>
               </Form.Group>
 
               <Row className='mb'>
