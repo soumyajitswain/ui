@@ -111,7 +111,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
-          <ManageCharging />
+          <ManageCharging transactionResponse={transactionResponse} />
         </Row>
         <Row>
           <Payment></Payment>
@@ -185,15 +185,13 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
   }, [chargeStationDetail, messageHistory])
 
   const startTransactionFunction = (event) => {
+    var startTransactionRequest1 = JSON.stringify(startTransactionReqLocal);
+    sendMessage(startTransactionRequest1);
+    var response = transactionResponse;
+    console.log(response);
+    event.preventDefault();
+  };
 
-      var startTransactionRequest1 = JSON.stringify(startTransactionReqLocal);
-      console.log(startTransactionRequest1);
-      sendMessage(startTransactionRequest1);
-      var response =  transactionResponse;
-      console.log(response);
-      event.preventDefault();
-    };
- 
   return (
     <Container fluid>
       <Card>
@@ -244,12 +242,24 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
   );
 };
 
-const ManageCharging = props => {
+const ManageCharging = (transactionResponse) => {
+  const [transacrionResLocal, setTransactionResLocal] = useState(null);
+  const [unitConsumed, setUnitConsumed] = useState(null);
+  const [price, setPrice] = useState(null);
 
-  const clickHandler = (ev, f) => {
-    window.location = "/invoice";
-    ev.preventDefault();
-  }
+  useEffect(() => {
+    var response = transactionResponse.transactionResponse;
+    setTransactionResLocal(response);
+    var action = response.action;
+    if (action !== undefined) {
+      var unit = response.val[0].start_value;
+      var price = unit * 1000;
+      setUnitConsumed(unit);
+      setPrice(price);
+    }
+  }, [transactionResponse]);
+
+
   return (
 
     <Container fluid='true' className='p-0 bgPrimary'>
@@ -265,8 +275,8 @@ const ManageCharging = props => {
           <Col md='6'>
             <Form>
               <Form.Group className='mb-3' controlId='meterChargeId'>
-                <p>Unit Consumed:1000</p>
-                <p>Invoice Amount: <span>&#8377;</span>1000</p>
+                <p>Unit Consumed:{unitConsumed}</p>
+                <p>Invoice Amount: <span>&#8377;</span>{price}</p>
               </Form.Group>
 
               <Form.Group className='mb-3' controlId='meterChargeId'>
