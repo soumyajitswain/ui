@@ -251,15 +251,10 @@ const ManageCharging = ( {transactionResponse, sendMessage} ) => {
   const [price, setPrice] = useState(null);
   const [transactionId, setTransactionId] = useState(null);
 
-  console.log(transactionResponse);
-
   var response = transactionResponse;
 
   useEffect((response) => {
-    //var response = transactionResponse.transactionResponse;
-    console.log(transactionResponse);
     async function loadTransactionResponse(transactionResponse) {
-      console.log(transactionResponse);
 
       setTransactionResLocal(transactionResponse);
       var action = transactionResponse.action;
@@ -274,11 +269,11 @@ const ManageCharging = ( {transactionResponse, sendMessage} ) => {
     }
 
     loadTransactionResponse(transactionResponse);
-    
+   
+
   }, [transactionResponse, sendMessage]);
-
+ 
   let transactionRequest = JSON.parse('{"action":"StartTransaction", "user_id":"1234", "func":"transaction_status"}');
-
   if (transactionId !== null) {
     var poolTrans = setInterval(() => {
       transactionRequest.transaction_id = transactionId;
@@ -286,6 +281,7 @@ const ManageCharging = ( {transactionResponse, sendMessage} ) => {
       sendMessage(JSON.stringify(transactionRequest));
     }, 30000);
   }
+ 
 
   return (
 
