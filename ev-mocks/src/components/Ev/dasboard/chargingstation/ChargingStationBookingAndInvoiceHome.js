@@ -86,7 +86,6 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
     setChargeStationConnector([req]);
     sendMessage(req);
 
-    console.log(req);
   }
 
   return (
@@ -113,7 +112,7 @@ const ChargingStationBookingAndInvoiceHome = (props) => {
         </Row>
         <div style={{ 'height': '20px' }}></div>
         <Row>
-          <ManageCharging  transactionResponse={transactionResponse} sendMessage={sendMessage}/>
+          <ManageCharging transactionResponse={transactionResponse} sendMessage={sendMessage} />
         </Row>
         <Row>
           <Payment></Payment>
@@ -129,6 +128,7 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
 
   const [chargeBoxSelection, setChargeBoxSelection] = useState('');
   const [connectorDetail, setConnectorDetail] = useState('');
+  const [connectorSelectBox, setConnectorSelectBox] = useState('');
   const [chargeBoxDetailLocal, setChargeBoxDetailLocal] = useState('');
   const [startTransactionReqLocal, setStartTransactionReqLocal] = useState('');
 
@@ -142,6 +142,19 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
         });
       setChargeBoxDetailLocal(chargeStationDetail);
       Promise.all(loadChargeStationPromise).then(setChargeBoxSelection);
+    }
+
+    async function loadConnectorSelectBox() {
+      var message_json = await connectorResponse;
+      var val_json = message_json.val
+      if (val_json !== undefined) {
+        setConnectorSelectBox(val_json.map((ix) => {
+          console.log(ix);
+          return <option value={ix[1].connector_pk}>{ix[1].connector_pk}</option>
+        }));
+      }
+
+      return connectorSelectBox;
     }
 
     async function loadConenctorDetail() {
@@ -171,7 +184,6 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
               <Card.Text>Connector Id:{val_json[0][1].connector_id}</Card.Text>
               <Card.Text>Notes: {val_json[0][0].note}</Card.Text>
               <Card.Text>status:{val_json[0][2].status}</Card.Text>
-              {startTransactionRequest.connector_pk = val_json[0][1].connector_pk}
 
             </Card.Body>
           </Card>
@@ -184,10 +196,19 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
 
     loadChargeStationDetail();
     loadConenctorDetail();
+    loadConnectorSelectBox();
   }, [chargeStationDetail, messageHistory])
+
+  const onChangeConnectorSelection = (ev) => {
+    var connector_pk = ev.target.value;
+    startTransactionRequest.connector_pk = connector_pk;
+    setStartTransactionReqLocal(startTransactionRequest);
+    console.log(startTransactionRequest)
+  };
 
   const startTransactionFunction = (event) => {
     var startTransactionRequest1 = JSON.stringify(startTransactionReqLocal);
+    console.log(startTransactionRequest1);
     sendMessage(startTransactionRequest1);
     var response = transactionResponse;
     console.log(response);
@@ -216,13 +237,17 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
               <Form.Group className="mb-10" controlId='ChargingStationName'>
                 <Form.Label>Charging Station Name</Form.Label>
                 <Form.Select aria-label='Default select example' onChange={(event) => getConnectorDetail(event)}>
+                  <option value='0'>Select Charge Box</option>
                   {chargeBoxSelection}
                 </Form.Select>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId='customerId'>
                 <Form.Label>Connectors</Form.Label>
-                <Form.Control type="text" placeholder='Connectors'></Form.Control>
+                <Form.Select placeholder='Connectors' onChange={(event) => onChangeConnectorSelection(event)}>
+                  <option value='0'>Select Connector</option>
+                  {connectorSelectBox}
+                </Form.Select>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId='scheduledTime'>
@@ -244,7 +269,7 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
   );
 };
 
-const ManageCharging = ( {transactionResponse, sendMessage} ) => {
+const ManageCharging = ({ transactionResponse, sendMessage }) => {
 
   const [transacrionResLocal, setTransactionResLocal] = useState(null);
   const [unitConsumed, setUnitConsumed] = useState(null);
@@ -269,10 +294,10 @@ const ManageCharging = ( {transactionResponse, sendMessage} ) => {
     }
 
     loadTransactionResponse(transactionResponse);
-   
+
 
   }, [transactionResponse, sendMessage]);
- 
+
   let transactionRequest = JSON.parse('{"action":"StartTransaction", "user_id":"1234", "func":"transaction_status"}');
   if (transactionId !== null) {
     var poolTrans = setInterval(() => {
@@ -281,7 +306,7 @@ const ManageCharging = ( {transactionResponse, sendMessage} ) => {
       sendMessage(JSON.stringify(transactionRequest));
     }, 30000);
   }
- 
+
 
   return (
 
