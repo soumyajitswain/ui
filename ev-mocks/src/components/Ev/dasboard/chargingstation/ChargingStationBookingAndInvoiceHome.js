@@ -307,6 +307,15 @@ const ManageCharging = ({ transactionResponse, sendMessage }) => {
     }, 30000);
   }
 
+  let stopTransactionRequest = JSON.parse('{"action":"StopTransaction", "user_id":"1234", "func":"stop_transaction"}');
+
+  const onClickStopTransansaction = (event) => {
+    if (transactionId !== null) {
+      stopTransactionRequest.transaction_id = transactionId;
+      console.log(stopTransactionRequest);
+      sendMessage(JSON.stringify(stopTransactionRequest));
+    }
+  };
 
   return (
 
@@ -338,7 +347,7 @@ const ManageCharging = ({ transactionResponse, sendMessage }) => {
 
               <Row className='mb'>
                 <Form.Group as={Col}>
-                  <Button variant='primary'>Cancel</Button>
+                  <Button variant='primary' onClick={onClickStopTransansaction}>Cancel</Button>
                 </Form.Group>
                 <Form.Group as={Col} >
                   <Button variant='secondary'>Payment</Button>
