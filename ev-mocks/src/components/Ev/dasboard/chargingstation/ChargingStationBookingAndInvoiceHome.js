@@ -131,6 +131,7 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
   const [connectorSelectBox, setConnectorSelectBox] = useState('');
   const [chargeBoxDetailLocal, setChargeBoxDetailLocal] = useState('');
   const [startTransactionReqLocal, setStartTransactionReqLocal] = useState('');
+  const [connectorPk, setConnectorPk] = useState('');
 
   let startTransactionRequest = JSON.parse('{"action":"StartTransaction", "user_id":"1234", "func":"start_transaction"}');
 
@@ -149,7 +150,6 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
       var val_json = message_json.val
       if (val_json !== undefined) {
         setConnectorSelectBox(val_json.map((ix) => {
-          console.log(ix);
           return <option value={ix[1].connector_pk}>{ix[1].connector_pk}</option>
         }));
       }
@@ -203,12 +203,14 @@ const ChargingStationBooking = ({ getConnectorDetail, messageHistory, connectorR
     var connector_pk = ev.target.value;
     startTransactionRequest.connector_pk = connector_pk;
     setStartTransactionReqLocal(startTransactionRequest);
-    console.log(startTransactionRequest)
+    setConnectorPk(connector_pk);
+    console.log(startTransactionRequest);
   };
 
   const startTransactionFunction = (event) => {
+    startTransactionReqLocal.connector_pk = connectorPk;
+    console.log(startTransactionReqLocal);
     var startTransactionRequest1 = JSON.stringify(startTransactionReqLocal);
-    console.log(startTransactionRequest1);
     sendMessage(startTransactionRequest1);
     var response = transactionResponse;
     console.log(response);
