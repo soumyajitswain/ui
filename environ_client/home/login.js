@@ -10,7 +10,8 @@ import {
     TouchableOpacity,
 } from "react-native";
 
-export default function Login() {
+
+export default function Login({submitLogin}) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -39,7 +40,7 @@ export default function Login() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.loginBtn}>
-                <Text style={styles.loginText}>LOGIN</Text>
+                <Text style={styles.loginText} onPress={submitLogin}>LOGIN</Text>
             </TouchableOpacity>
         </View>
     );
