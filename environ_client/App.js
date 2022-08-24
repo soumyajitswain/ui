@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Landing from './home/landing';
-import Login from './home/login';
+import Landing from './module/landing';
+import Login from './module/login';
 
 export default function App() {
   const [props, setProps] = useState({ loggedIn: false });
