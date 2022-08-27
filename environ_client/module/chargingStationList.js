@@ -36,6 +36,11 @@ export default function ChargingStationList() {
         }
     ])
 
+    const onPressChargeListPage  = () => {
+        alert('Back');
+        setSelectedItemFlag(false);
+    }
+
     const renderFeaturedItems = (item, index) => {
         return (
             <TouchableOpacity
@@ -62,7 +67,7 @@ export default function ChargingStationList() {
                     renderItem={({ item, index }) => renderFeaturedItems(item, index)}></FlatList>
             }
             {selectedItemFlag &&
-              <ChargingStation></ChargingStation>
+              <ChargingStation onPressChargeListPage={onPressChargeListPage}></ChargingStation>
             }
 
         </View>
